@@ -1,6 +1,6 @@
 # Django CV Generator
 
-Hi! 👋 This is a Resume Builder application I built to learn **Django** and web development. It helps users create professional resumes by filling out a simple form.
+Hi! 👋 This is a Resume Builder application I built to using **Django** and web development. It helps users create professional resumes by filling out a simple form.
 
 ## 🛠 Tech Stack Used
 - **Python** (Backend Logic)
@@ -46,11 +46,11 @@ If you want to run this project on your computer:
 
 ## 📸 Screenshots
 
-![Home Page](screenshots/home.png)
+![Home Page](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20044946.png)
 *Home Page*
 
-![Form Section](screenshots/form.png)
+![Form Section](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20053235.png)
 *Entering Details*
 
-![Resume Preview](screenshots/preview.png)
+![Resume Preview]([screenshots/preview.png](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20053824.png))
 *Final Resume PDF*
