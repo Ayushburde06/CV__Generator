@@ -1,62 +1,56 @@
-# CV Generator
+# Django CV Generator
 
-A powerful, user-friendly web application built with **Django** to create professional Curriculum Vitae (CV) / Resumes in PDF format.
+Hi! 👋 This is a Resume Builder application I built to learn **Django** and web development. It helps users create professional resumes by filling out a simple form.
 
-## 🚀 Features
+## 🛠 Tech Stack Used
+- **Python** (Backend Logic)
+- **Django** (Web Framework)
+- **HTML/CSS** (Frontend Styling)
+- **SQLite** (Database)
+- **ReportLab** (For generating PDFs)
 
-- **Multi-Step Form**: Easy-to-use wizard for entering personal info, summary, projects, skills, education, and certifications.
-- **7 Professional Templates**: Choose from Classic, Modern, Minimal, Professional, AltaCV, CurVe, and Hipster styles.
-- **Live Preview**: See your CV update in real-time as you enter data.
-- **PDF Generation**: High-quality PDF export using ReportLab.
-- **Customizable**: Add unlimited projects and education entries.
-- **Responsive**: Works on desktop and mobile.
+## ✨ What it does
+- Users can sign up and login.
+- Enter details like Education, Skills, Projects, and Certifications.
+- Choose from 7 different resume templates.
+- **Download the final resume as a PDF!** 📄
 
-## 🛠️ Installation
+## 🚀 How to Run Locally
 
-1.  **Clone the repository**:
+If you want to run this project on your computer:
+
+1.  **Download the code**:
     ```bash
     git clone https://github.com/Ayushburde06/CV__Generator.git
     cd CV__Generator
     ```
 
-2.  **Create a virtual environment**:
+2.  **Set up the environment**:
     ```bash
     python -m venv venv
-    # Windows
-    .\venv\Scripts\activate
-    # macOS/Linux
-    source venv/bin/activate
+    .\venv\Scripts\activate   # On Windows
+    # source venv/bin/activate  # On Mac/Linux
     ```
 
-3.  **Install dependencies**:
+3.  **Install libraries**:
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Run migrations**:
-    ```bash
-    python manage.py migrate
-    ```
-
-5.  **Start the server**:
+4.  **Start the app**:
     ```bash
     python manage.py runserver
     ```
 
-6.  Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
+5.  Open the link in your browser: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-## 📝 Usage
+## 📸 Screenshots
 
-1.  **Sign Up / Login** to save your progress.
-2.  **Choose a Template** to start.
-3.  **Fill out the form** (Personal Info, Summary, Projects, Skills, Education, Certifications).
-4.  **Preview** your CV at the end.
-5.  **Download PDF** and share!
+![Home Page](screenshots/home.png)
+*Home Page*
 
-## ☁️ Deployment
+![Form Section](screenshots/form.png)
+*Entering Details*
 
-See [README_DEPLOY.md](README_DEPLOY.md) for instructions on deploying to Render, Railway, or Heroku.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
+![Resume Preview](screenshots/preview.png)
+*Final Resume PDF*
