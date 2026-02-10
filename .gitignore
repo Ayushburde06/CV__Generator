@@ -1,0 +1,40 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+.env
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific (Temporary verification/fix scripts)
+fix_template.py
+fix_template_v2.py
+fix_template_v3.py
+restore_full_template.py
+validate_template.py
+verify_backend.py
+verify_backend_skills.py
+update_pdf_skills_format.py
+update_pdf_views_full.py
+resume_text.txt

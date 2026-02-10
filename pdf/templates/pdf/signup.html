@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - ResuCrafta</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+        }
+
+        .signup-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* Left Side - Hero */
+        .signup-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        .hero-emoji {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .hero-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text {
+            font-size: 1rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .feature-item span {
+            font-size: 1.5rem;
+        }
+
+        /* Right Side - Form */
+        .signup-form-section {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #333;
+            animation: slideInDown 0.8s ease;
+        }
+
+        .form-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.8s ease 0.1s both;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #667eea;
+            border: none;
+            background: none;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        .toggle-password:hover {
+            opacity: 0.7;
+        }
+
+        .btn-signup {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+        }
+
+        .btn-signup:active {
+            transform: translateY(-1px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #c33;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .error-message li {
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .password-strength {
+            display: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .password-strength.weak {
+            background: #ffe0e0;
+            color: #c33;
+            display: block;
+        }
+
+        .password-strength.medium {
+            background: #fffacd;
+            color: #997700;
+            display: block;
+        }
+
+        .password-strength.strong {
+            background: #e0ffe0;
+            color: #038902;
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .signup-container {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-hero {
+                display: none;
+            }
+
+            .signup-form-section {
+                padding: 2rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .logo {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: #667eea;
+            font-size: 1.5rem;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .two-col-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .two-col-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" class="logo">📄 ResuCrafta</a>
+
+    <div class="signup-container">
+        <!-- Left Side - Hero -->
+        <div class="signup-hero">
+            <div class="hero-emoji">🎯</div>
+            <h2 class="hero-title">Start Your Journey</h2>
+            <p class="hero-text">Join thousands of professionals creating amazing CVs every day</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span>🚀</span>
+                    <span>Get Started in Seconds</span>
+                </div>
+                <div class="feature-item">
+                    <span>🎨</span>
+                    <span>Professional Templates</span>
+                </div>
+                <div class="feature-item">
+                    <span>📥</span>
+                    <span>Download Your CV</span>
+                </div>
+                <div class="feature-item">
+                    <span>✨</span>
+                    <span>Stand Out</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="signup-form-section">
+            <h1 class="form-title">Create Account 🎉</h1>
+            <p class="form-subtitle">Join us and build your perfect CV today</p>
+
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'signup' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    {% if form.email.errors %}
+                        <div class="error-message" style="margin-top: 0.5rem; margin-bottom: 0;">
+                            <ul style="margin-bottom: 0;">
+                                {% for error in form.email.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password1" name="password1" placeholder="Create a strong password" required onkeyup="checkPasswordStrength()">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password1')">👁️</button>
+                    </div>
+                    <div class="password-strength" id="strength-indicator"></div>
+                    {% if form.password1.errors %}
+                        <div class="error-message" style="margin-top: 0.5rem; margin-bottom: 0;">
+                            <ul style="margin-bottom: 0;">
+                                {% for error in form.password1.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password2">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password2')">👁️</button>
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="error-message" style="margin-top: 0.5rem; margin-bottom: 0;">
+                            <ul style="margin-bottom: 0;">
+                                {% for error in form.password2.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-signup">Create Account 🚀</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="{% url 'login' %}">Log in here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = event.target;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password1').value;
+            const indicator = document.getElementById('strength-indicator');
+            
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (password.length === 0) {
+                indicator.style.display = 'none';
+            } else if (strength <= 2) {
+                indicator.className = 'password-strength weak';
+                indicator.textContent = '⚠️ Weak password';
+            } else if (strength <= 4) {
+                indicator.className = 'password-strength medium';
+                indicator.textContent = '✋ Medium strength';
+            } else {
+                indicator.className = 'password-strength strong';
+                indicator.textContent = '✅ Strong password';
+            }
+        }
+
+        // Add animation to form fields
+        document.querySelectorAll('.form-group input').forEach((input, index) => {
+            input.style.animationDelay = `${0.1 + index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>

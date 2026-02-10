@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ResuCrafta - Build Your Resume</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: stretch; padding: 80px 20px 20px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .main-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; width: 100%; margin: auto; align-items: start; }
+        .main-container.single-column { grid-template-columns: 1fr; display: flex; align-items: center; justify-content: center; }
+        .form-container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; animation: slideInLeft 0.5s ease-out; width: 100%; max-width: 700px; }
+        .main-container.single-column .form-container { max-width: 800px; }
+        .preview-container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 30px; animation: slideInRight 0.5s ease-out; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        .preview-content { min-height: 600px; background: #f8f9fa; padding: 20px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+        .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; }
+        .step-indicator::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: #e0e0e0; z-index: 1; }
+        .step-number { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; position: relative; z-index: 2; color: #666; transition: all 0.3s ease; }
+        .step-number.active { background: #667eea; color: white; box-shadow: 0 0 15px rgba(102,126,234,0.4); animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .step-number.completed { background: #28a745; color: white; animation: checkmark 0.6s ease-out; }
+        @keyframes checkmark { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .step-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #333; text-align: center; animation: titleSlide 0.6s ease-out; }
+        @keyframes titleSlide { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .form-group { animation: fieldFadeIn 0.5s ease-out forwards; }
+        .form-group:nth-child(1) { animation-delay: 0.1s; } .form-group:nth-child(2) { animation-delay: 0.2s; } .form-group:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes fieldFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group label { font-weight: 500; color: #333; margin-bottom: 8px; }
+        .form-control:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25); }
+        .button-group { display: flex; gap: 10px; margin-top: 30px; justify-content: space-between; flex-wrap: wrap; animation: buttonSlideUp 0.6s ease-out; }
+        @keyframes buttonSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn { transition: all 0.3s ease; flex: 1; min-width: 120px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(0); }
+        .preview-title { text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; font-size: 16px; }
+        .preview-section { margin-bottom: 12px; }
+        .preview-section h5 { font-weight: bold; border-bottom: 1px solid #333; margin: 12px 0 6px 0; font-size: 12px; }
+        .preview-section p { margin: 4px 0; font-size: 11px; }
+        @media (max-width: 1024px) { .main-container { grid-template-columns: 1fr; } .preview-container { display: none; } .form-container { max-width: 500px; margin: auto; } }
+        .celebration-wrapper { padding: 40px 20px; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes slideInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes successBounce { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+        .success-message .btn { flex: none; }
+        .preview-container { animation: previewFadeIn 0.6s ease-out; }
+        @keyframes previewFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .confetti { position: fixed; pointer-events: none; }
+        .progress-bar-container { width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 3px; animation: growWidth 0.8s ease-out; transition: width 0.5s ease; }
+        @keyframes growWidth { from { width: 0%; } to { width: calc(var(--progress) * 100%); } }
+        /* Top Navigation */
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        .home-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+        .home-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); text-decoration: none; color: white; }
+        .nav-title { color: #667eea; font-weight: 700; font-size: 1.3rem; }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <a href="{% url 'home' %}" class="home-btn">← Back to Home</a>
+        <span class="nav-title">ResuCrafta</span>
+        <div style="width: 120px;"></div>
+    </div>
+
+    <div class="main-container {% if step == 0 or step == 8 %}single-column{% endif %}">
+        <!-- Left Side: Form -->
+        <div class="form-container">
+            {% if success %}
+            <div class="success-message">
+                <h2>✓ CV Saved Successfully!</h2>
+                <p>Your profile has been saved and is ready to download.</p>
+                <a href="{% url 'generate_pdf' profile.id %}" class="btn btn-primary btn-lg">📥 Download PDF</a>
+                <form method="POST" action="" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="restart_templates" value="true" class="btn btn-secondary btn-lg" style="margin-top: 10px;">Create Another</button>
+                </form>
+            </div>
+            {% else %}
+            <!-- Template Selection -->
+            {% if step == 0 %}
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #333; margin-bottom: 10px; font-size: 28px;">🎨 Choose Your CV Template</h2>
+                <p style="color: #666; font-size: 14px;">Pick a professional format that matches your style</p>
+            </div>
+            
+            {% if has_previous_data %}
+            <div style="background: #f0f9ff; border: 2px solid #667eea; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                <p style="color: #333; font-weight: 600; margin-bottom: 8px;">📝 You have previously saved data</p>
+                <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Continue editing with your current <strong>{{ template|upper }}</strong> template, or choose a different template below (your data will be preserved).</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <form method="POST" action="" style="margin: 0;">{% csrf_token %}<button type="submit" name="continue_editing" value="true" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">✏️ Continue with {{ template|upper }}</button></form>
+                    <form method="POST" action="" style="margin: 0;">{% csrf_token %}<button type="submit" name="start_fresh" value="true" style="width: 100%; padding: 12px; background: white; color: #667eea; border: 2px solid #667eea; border-radius: 6px; font-weight: 600; cursor: pointer;">🆕 Start Fresh</button></form>
+                </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;"><p style="color: #666; font-size: 14px; font-weight: 500;">Or choose a different template below:</p></div>
+            {% endif %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+                <!-- TEMPLATE BUTTONS (AltaCV, CurVe, Hipster, Classic, Modern, Minimal) -->
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="altacv" style="width: 100%; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; cursor: pointer; text-align: left;"><strong>📋 AltaCV</strong><br/><small>Sidebar with achievements</small></button></form>
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="curve" style="width: 100%; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; cursor: pointer; text-align: left;"><strong>🎨 CurVe CV</strong><br/><small>Colorful modern design</small></button></form>
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="hipster" style="width: 100%; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; cursor: pointer; text-align: left;"><strong>👤 Hipster</strong><br/><small>Dark header with photo</small></button></form>
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="classic" style="width: 100%; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; cursor: pointer; text-align: left;"><strong>📄 Classic</strong><br/><small>Black & white traditional</small></button></form>
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="modern" style="width: 100%; padding: 20px; border: 2px solid #667eea; border-radius: 8px; background: #f9f9ff; cursor: pointer; text-align: left;"><strong>✨ Modern</strong><br/><small>Color accent design</small></button></form>
+                <form method="POST" action="">{% csrf_token %}<button type="submit" name="template" value="minimal" style="width: 100%; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; cursor: pointer; text-align: left;"><strong>🎯 Minimal</strong><br/><small>Clean & minimal design</small></button></form>
+            </div>
+
+            {% else %}
+            <!-- Regular Form Steps -->
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="--progress: {% if step == 1 %}0.17{% elif step == 2 %}0.33{% elif step == 3 %}0.50{% elif step == 4 %}0.67{% elif step == 5 %}0.83{% elif step == 6 %}0.99{% else %}1{% endif %};"></div>
+            </div>
+            
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                {% for i in "123456" %}
+                <div class="step-number {% if forloop.counter == step %}active{% elif forloop.counter < step %}completed{% endif %}">{{ forloop.counter }}</div>
+                {% endfor %}
+                <form method="post" style="display: inline; margin-left: 12px;">{% csrf_token %}<button type="submit" name="restart_templates" value="true" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 11px; cursor: pointer;">🎨 Change Format</button></form>
+            </div>
+
+            <!-- Progress Message -->
+            <div class="progress-message">
+                {% if step == 1 %}<span class="emoji">🚀</span><strong>Let's get started!</strong><p>Tell us about yourself</p>
+                {% elif step == 2 %}<span class="emoji">✨</span><strong>Tell your story</strong><p>What makes you special?</p>
+                {% elif step == 3 %}<span class="emoji">🏆</span><strong>Showcase your work!</strong><p>Add your projects</p>
+                {% elif step == 4 %}<span class="emoji">⚡</span><strong>What can you do?</strong><p>Your technical skills</p>
+                {% elif step == 5 %}<span class="emoji">🎓</span><strong>Your academic journey</strong><p>Share your education</p>
+                {% elif step == 6 %}<span class="emoji">📜</span><strong>Almost there!</strong><p>Add your certifications</p>
+                {% elif step == 7 %}<span class="emoji">✅</span><strong>Your CV is ready!</strong><p>Preview before download</p>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="step" value="{{ step }}">
+
+                <!-- Step 1: Personal Information -->
+                {% if step == 1 %}
+                <div class="step-title">Personal Information</div>
+                <div class="form-group"><label for="name">Full Name</label><input type="text" class="form-control" id="name" name="name" value="{{ form_data.name }}" placeholder="e.g. John Doe" required></div>
+                <div class="form-group"><label for="email">Email Address</label><input type="email" class="form-control" id="email" name="email" value="{{ form_data.email }}" placeholder="e.g. john@example.com" required></div>
+                <div class="form-group"><label for="phone">Phone Number</label><input type="tel" class="form-control" id="phone" name="phone" value="{{ form_data.phone }}" placeholder="e.g. +1 234 567 8900"></div>
+                <div class="form-group"><label for="github_url">GitHub URL <small>(Optional)</small></label><input type="url" class="form-control" id="github_url" name="github_url" value="{{ form_data.github_url }}" placeholder="https://github.com/johndoe"></div>
+                <div class="form-group"><label for="linkedin_url">LinkedIn URL <small>(Optional)</small></label><input type="url" class="form-control" id="linkedin_url" name="linkedin_url" value="{{ form_data.linkedin_url }}" placeholder="https://linkedin.com/in/johndoe"></div>
+
+                <!-- Step 2: Summary -->
+                {% elif step == 2 %}
+                <div class="step-title">Professional Summary</div>
+                <div class="form-group"><label for="summary">Summary</label><textarea class="form-control" id="summary" name="summary" rows="5" placeholder="Briefly describe your professional background and goals...">{{ form_data.summary }}</textarea></div>
+
+                <!-- Step 3: Projects (Structured) -->
+                {% elif step == 3 %}
+                <div class="step-title">Projects</div>
+                <div id="projects-container">
+                    {% if form_data.projects_list %}
+                        {% for project in form_data.projects_list %}
+                        <div class="project-entry" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Project {{ forloop.counter }}</h6>
+                                {% if not forloop.first %}<button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>{% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label>Project Title</label>
+                                <input type="text" class="form-control" name="project_title_{{ forloop.counter0 }}" value="{{ project.title }}" placeholder="e.g. E-commerce Website">
+                            </div>
+                            <div class="form-group">
+                                <label>Key Points <small>(One per line)</small></label>
+                                <textarea class="form-control" name="project_points_{{ forloop.counter0 }}" rows="3" placeholder="• Led development of...">{{ project.points }}</textarea>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Default empty project -->
+                        <div class="project-entry" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Project 1</h6>
+                            </div>
+                            <div class="form-group">
+                                <label>Project Title</label>
+                                <input type="text" class="form-control" name="project_title_0" placeholder="e.g. E-commerce Website">
+                            </div>
+                            <div class="form-group">
+                                <label>Key Points <small>(One per line)</small></label>
+                                <textarea class="form-control" name="project_points_0" rows="3" placeholder="• Led development of..."></textarea>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <input type="hidden" name="projects_count" id="projects_count" value="{{ form_data.projects_list|length|default:1 }}">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addProject()">+ Add Another Project</button>
+                
+                <script>
+                    function addProject() {
+                        const container = document.getElementById('projects-container');
+                        const countInput = document.getElementById('projects_count');
+                        let count = parseInt(countInput.value);
+                        
+                        const newEntry = document.createElement('div');
+                        newEntry.className = 'project-entry';
+                        newEntry.style = 'background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0; animation: fieldFadeIn 0.3s ease-out;';
+                        newEntry.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Project ${count + 1}</h6>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Project Title</label>
+                                <input type="text" class="form-control" name="project_title_${count}" placeholder="e.g. E-commerce Website">
+                            </div>
+                            <div class="form-group">
+                                <label>Key Points <small>(One per line)</small></label>
+                                <textarea class="form-control" name="project_points_${count}" rows="3" placeholder="• Led development of..."></textarea>
+                            </div>
+                        `;
+                        container.appendChild(newEntry);
+                        countInput.value = count + 1;
+                    }
+                </script>
+
+                <!-- Step 4: Skills -->
+                {% elif step == 4 %}
+                <div class="step-title">Technical Skills</div>
+                <div class="form-group"><label for="skills">Skills</label><textarea class="form-control" id="skills" name="skills" rows="5" placeholder="Python, Django, JavaScript, React...">{{ form_data.skills }}</textarea></div>
+
+                <!-- Step 5: Education (Structured) -->
+                {% elif step == 5 %}
+                <div class="step-title">Education</div>
+                <div id="education-container">
+                    {% if form_data.education_list %}
+                        {% for edu in form_data.education_list %}
+                        <div class="education-entry" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Education {{ forloop.counter }}</h6>
+                                {% if not forloop.first %}<button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>{% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label>Degree</label>
+                                <input type="text" class="form-control" name="degree_{{ forloop.counter0 }}" value="{{ edu.degree }}" placeholder="e.g. B.S. Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>University</label>
+                                <input type="text" class="form-control" name="university_{{ forloop.counter0 }}" value="{{ edu.university }}" placeholder="e.g. Stanford University">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="education-entry" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Education 1</h6>
+                            </div>
+                            <div class="form-group">
+                                <label>Degree</label>
+                                <input type="text" class="form-control" name="degree_0" value="{{ form_data.degree }}" placeholder="e.g. B.S. Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>University</label>
+                                <input type="text" class="form-control" name="university_0" value="{{ form_data.university }}" placeholder="e.g. Stanford University">
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <input type="hidden" name="education_count" id="education_count" value="{{ form_data.education_list|length|default:1 }}">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addEducation()">+ Add Another Education</button>
+
+                <script>
+                    function addEducation() {
+                        const container = document.getElementById('education-container');
+                        const countInput = document.getElementById('education_count');
+                        let count = parseInt(countInput.value);
+                        
+                        const newEntry = document.createElement('div');
+                        newEntry.className = 'education-entry';
+                        newEntry.style = 'background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0; animation: fieldFadeIn 0.3s ease-out;';
+                        newEntry.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <h6 style="font-weight: bold; color: #667eea;">Education ${count + 1}</h6>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Degree</label>
+                                <input type="text" class="form-control" name="degree_${count}" placeholder="e.g. B.S. Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>University</label>
+                                <input type="text" class="form-control" name="university_${count}" placeholder="e.g. Stanford University">
+                            </div>
+                        `;
+                        container.appendChild(newEntry);
+                        countInput.value = count + 1;
+                    }
+                </script>
+
+                <!-- Step 6: Certifications -->
+                {% elif step == 6 %}
+                <div class="step-title">Certifications</div>
+                <div class="form-group">
+                    <label for="certifications">Your Certifications <small style="color: #888;">(one per line)</small></label>
+                    <textarea class="form-control" id="certifications" name="certifications" rows="5" placeholder="AWS Certified Solutions Architect&#10;Google Cloud Professional Engineer&#10;PMP Certification">{{ form_data.certifications }}</textarea>
+                </div>
+
+                <!-- Step 7: Preview -->
+                {% elif step == 7 %}
+                <div class="step-title">✅ Preview Your CV</div>
+                <div class="preview-container" style="background: #f8f9fa; padding: 20px; border-radius: 8px; max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; margin-bottom: 0; padding-bottom: 12px;">
+                        <h4 style="font-weight: bold; margin: 0 0 6px 0; font-size: 18px; letter-spacing: 1px;">{{ form_data.name|upper }}</h4>
+                        <p style="margin: 0; font-size: 11px; color: #444; line-height: 1.6;">{{ form_data.email }}{% if form_data.phone %} &nbsp;|&nbsp; {{ form_data.phone }}{% endif %}{% if form_data.github_url %} &nbsp;|&nbsp; <a href="{{ form_data.github_url }}" target="_blank" style="color: #667eea; text-decoration: none;">GitHub</a>{% endif %}{% if form_data.linkedin_url %} &nbsp;|&nbsp; <a href="{{ form_data.linkedin_url }}" target="_blank" style="color: #667eea; text-decoration: none;">LinkedIn</a>{% endif %}</p>
+                    </div>
+                    <hr style="border: none; border-top: 2px solid #000; margin: 0 0 12px 0;" />
+                    
+                    {% if form_data.summary %}
+                    <h5 style="margin-top: 12px; margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Professional Summary</h5>
+                    <p style="font-size: 11px; line-height: 1.5;">{{ form_data.summary }}</p>
+                    {% endif %}
+
+                    {% if form_data.projects_list %}
+                    <h5 style="margin-top: 12px; margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Projects</h5>
+                    {% for proj in form_data.projects_list %}
+                    <div style="margin-bottom: 8px;">
+                        <p style="font-size: 11px; font-weight: bold; margin: 0 0 2px 0;">{{ proj.title }}</p>
+                        {% for line in proj.points_list %}
+                        <p style="font-size: 10px; line-height: 1.4; margin: 0 0 1px 12px; color: #333;">• {{ line }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form_data.skills %}
+                    <h5 style="margin-top: 12px; margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Technical Skills</h5>
+                    <p style="font-size: 11px; line-height: 1.5;">{{ form_data.skills }}</p>
+                    {% endif %}
+
+                    {% if form_data.education_list %}
+                    <h5 style="margin-top: 12px; margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Education</h5>
+                    {% for edu in form_data.education_list %}
+                    <p style="font-size: 11px; line-height: 1.5;"><strong>{{ edu.degree }}</strong><br />{{ edu.university }}</p>
+                    {% endfor %}
+                    {% endif %}
+                    
+                    {% if form_data.certifications %}
+                    <h5 style="margin-top: 12px; margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Certifications</h5>
+                    <p style="font-size: 11px; line-height: 1.5;">{{ form_data.certifications|linebreaksbr }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Step 8: Celebration -->
+                {% elif step == 8 %}
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 100px; animation: bounce 0.6s ease-in-out; margin-bottom: 20px;">💼👔</div>
+                    <div class="step-title" style="font-size: 28px; margin-bottom: 20px; animation: slideInDown 0.8s ease;">🎉 Your Resume is Ready! 🎉</div>
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; margin: 20px 0; animation: slideInUp 0.8s ease 0.2s both;">
+                        <div style="font-size: 18px; margin-bottom: 15px; font-weight: bold;">"Congratulations, {{ form_data.name }}! 🌟"</div>
+                        <p style="font-size: 14px; line-height: 1.8; margin-bottom: 15px;">Your professional resume is now complete and ready to impress! You've created a standout document that showcases your skills, experience, and potential to employers worldwide.</p>
+                        <p style="font-size: 14px; line-height: 1.8; margin-bottom: 15px;">I believe in you! Go out there and land that dream job. You've got this! 💪</p>
+                        <div style="font-size: 16px; margin-top: 15px;">✨ Make every opportunity count! ✨</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Navigation Buttons -->
+                <div class="button-group">
+                    {% if step > 1 and step != 8 %}
+                    <button type="submit" name="previous_step" value="{{ step|add:'-1' }}" class="btn btn-secondary">← Back</button>
+                    {% endif %}
+
+                    {% if step < 7 %} 
+                    <button type="submit" name="next_step" value="{{ step|add:'1' }}" class="btn btn-primary">Next →</button>
+                    {% elif step == 7 %}
+                    <!-- In Preview Step -->
+                    <button type="submit" name="previous_step" value="6" class="btn btn-secondary">← Edit</button>
+                    <button type="submit" name="submit" value="true" class="btn btn-success btn-lg">Download PDF</button>
+                    {% elif step == 8 %}
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">← Back to Home</a>
+                    <form method="POST" action="" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" name="restart_templates" value="true" class="btn btn-info btn-lg">Create Another CV</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </form>
+            {% endif %}
+            {% endif %}  <!-- End if success -->
+        </div>
+
+        <!-- Right Side: Live Preview -->
+        {% if step != 0 and step != 8 %}
+        <div class="preview-container">
+            <h4 style="text-align: center; margin-bottom: 20px; color: #667eea; font-weight: bold;">📄 Preview Your Resume</h4>
+            <div class="preview-content">
+                {% if form_data.name %}
+                <div style="text-align: center; padding-bottom: 8px;">
+                    <div class="preview-title" style="margin-bottom: 4px; border-bottom: none; padding-bottom: 0;">{{ form_data.name|upper }}</div>
+                    <p style="text-align: center; font-size: 10px; margin: 0; color: #555; line-height: 1.5;">{% if form_data.email %}{{ form_data.email }}{% endif %}{% if form_data.phone %} &nbsp;|&nbsp; {{ form_data.phone }}{% endif %}{% if form_data.github_url %} &nbsp;|&nbsp; <a href="{{ form_data.github_url }}" target="_blank" style="color: #667eea;">GitHub</a>{% endif %}{% if form_data.linkedin_url %} &nbsp;|&nbsp; <a href="{{ form_data.linkedin_url }}" target="_blank" style="color: #667eea;">LinkedIn</a>{% endif %}</p>
+                </div>
+                <hr style="border: none; border-top: 2px solid #333; margin: 0 0 10px 0;" />
+                
+                {% if form_data.summary %}
+                <div class="preview-section"><h5>Professional Summary</h5><p>{{ form_data.summary }}</p></div>
+                {% endif %}
+
+                {% if form_data.projects_list %}
+                <div class="preview-section">
+                    <h5>Projects</h5>
+                    {% for proj in form_data.projects_list %}
+                    <div style="margin-bottom: 6px;">
+                        <p style="font-weight: bold; margin: 0 0 2px 0; font-size: 11px;">{{ proj.title }}</p>
+                        {% for line in proj.points_list %}
+                        <p style="font-size: 10px; margin: 0 0 1px 10px; color: #555;">• {{ line }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if form_data.skills %}
+                <div class="preview-section"><h5>Technical Skills</h5><p>{{ form_data.skills }}</p></div>
+                {% endif %}
+
+                {% if form_data.education_list %}
+                <div class="preview-section">
+                    <h5>Education</h5>
+                    {% for edu in form_data.education_list %}
+                    <p><strong>{{ edu.degree }}</strong><br />{{ edu.university }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if form_data.certifications %}
+                <div class="preview-section"><h5>Certifications</h5><p style="white-space: pre-line;">{{ form_data.certifications }}</p></div>
+                {% endif %}
+                
+                {% else %}
+                <div style="text-align: center; padding: 40px 20px; color: #999;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">👀</div>
+                    <p>Start filling your details to see a live preview of your resume here!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div><!-- End main-container -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        function createConfetti() {
+            const confettiPieces = 50;
+            for (let i = 0; i < confettiPieces; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.backgroundColor = ['#667eea', '#764ba2', '#28a745', '#ff6b6b', '#ffd93d'][Math.floor(Math.random() * 5)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.opacity = '0.8';
+                document.body.appendChild(confetti);
+                const duration = Math.random() * 2 + 2;
+                const xMove = (Math.random() - 0.5) * 200;
+                confetti.animate([ { transform: 'translateY(0) translateX(0)', opacity: 1 }, { transform: `translateY(${window.innerHeight}px) translateX(${xMove}px)`, opacity: 0 } ], { duration: duration * 1000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
+                setTimeout(() => confetti.remove(), duration * 1000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const stepInput = document.querySelector('input[name="step"]');
+            if (stepInput && stepInput.value == 8) { createConfetti(); }
+        });
+    </script>
+</body>
+</html>
