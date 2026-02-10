@@ -52,5 +52,5 @@ If you want to run this project on your computer:
 ![Form Section](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20053235.png)
 *Entering Details*
 
-![Resume Preview]([screenshots/preview.png](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20053824.png)
+![Resume Preview](https://github.com/Ayushburde06/CV__Generator/blob/main/ss/Screenshot%202026-02-10%20053824.png)
 *Final Resume PDF*
